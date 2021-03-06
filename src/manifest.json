@@ -1,0 +1,21 @@
+{
+  "name": "Aprovado Helper",
+  "description": "Extensão para cadastro automático no site aprovado",
+  "author": "Gleison de Almeida Ribeiro",
+  "version": "1.0.0",
+  "manifest_version": 2,
+  "icons": {
+    "48": "/assets/icons/48.png",
+    "72": "/assets/icons/72.png",
+    "144": "/assets/icons/144.png",
+    "196": "/assets/icons/196.png"
+  },
+  "background": {
+    "scripts": ["runtime.js"]
+  },
+  "browser_action": {
+    "default_title": "Aprovado Helper",
+    "default_popup": "/index.html#/popup"
+  },
+  "permissions": ["activeTab", "declarativeContent", "storage", "contextMenus"]
+}
