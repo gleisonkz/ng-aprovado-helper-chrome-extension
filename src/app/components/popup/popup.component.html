@@ -1,1 +1,83 @@
-<p>popup works!</p>
+<div class="popup">
+  <header class="popup__header">
+    <h2 class="popup__title">Aprovado Helper</h2>
+    <img class="popup__image" src="assets/icons/icon.png" alt="Aprovado Logo" />
+  </header>
+  <div class="video">
+    <h2 class="video__header">Detalhes do video atual</h2>
+    <p class="video__info">
+      Duração:
+      <span #$duration class="value"></span>
+    </p>
+    <p class="video__info">
+      Título:
+      <span #$title class="value"></span>
+    </p>
+  </div>
+  <form class="popup__form" [formGroup]="userForm">
+    <mat-form-field class="popup__field">
+      <mat-label>email</mat-label>
+      <input
+        #input
+        matInput
+        type="text"
+        formControlName="email"
+        placeholder="Ex. pat@example.com"
+      />
+      <button
+        mat-button
+        *ngIf="userForm.controls.email.value"
+        matSuffix
+        mat-icon-button
+        aria-label="Clear"
+        tabindex="-1"
+        (click)="userForm.controls.email.setValue('')"
+      >
+        <mat-icon class="field__icon">close</mat-icon>
+      </button>
+    </mat-form-field>
+    <mat-form-field class="popup__field">
+      <mat-label>senha</mat-label>
+      <input
+        #input
+        matInput
+        type="text"
+        (keyup.enter)="login()"
+        formControlName="password"
+        placeholder="Ex. pat@example.com"
+      />
+      <button
+        mat-button
+        *ngIf="userForm.controls.password.value"
+        matSuffix
+        mat-icon-button
+        aria-label="Clear"
+        tabindex="-2"
+        (click)="userForm.controls.password.setValue('')"
+      >
+        <mat-icon class="field__icon">close</mat-icon>
+      </button>
+    </mat-form-field>
+  </form>
+
+  <!-- <button
+    [disabled]="!userForm.valid"
+    mat-raised-button
+    class="popup__button"
+    color="accent"
+    type="button"
+    (click)="login()"
+  >
+    Login
+  </button> -->
+
+  <button
+    mat-raised-button
+    class="popup__button"
+    color="accent"
+    type="button"
+    (click)="post()"
+  >
+    Postar
+  </button>
+</div>

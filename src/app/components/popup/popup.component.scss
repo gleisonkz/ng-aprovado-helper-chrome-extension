@@ -1,0 +1,49 @@
+@import "variables";
+@import "mixins";
+@import "functions";
+@import "custom-theme";
+
+$primary: map-get($theme, primary);
+$accent: map-get($theme, accent);
+
+.popup {
+  padding: $global-radius * 2;
+  width: 400px;
+
+  &__header {
+    @include flex-center();
+    justify-content: space-between;
+    margin-bottom: $global-module-size;
+  }
+  &__title {
+    color: mat-color($primary);
+    font-weight: bold;
+    font-size: rem(25);
+  }
+
+  &__image {
+    border-radius: 5px;
+    height: 90px;
+    width: 90px;
+  }
+
+  &__form {
+    margin-top: $global-module-size;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.video {
+  &__header {
+    font-size: rem(13);
+    margin-bottom: $global-module-size / 2;
+  }
+  &__info {
+    & + & {
+      margin-top: $global-module-size / 5;
+    }
+  }
+  .value {
+  }
+}
