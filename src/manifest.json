@@ -13,17 +13,9 @@
   "background": {
     "scripts": ["background.js", "runtime.js"]
   },
-  "browser_action": {
+  "page_action": {
     "default_title": "Aprovado Helper",
     "default_popup": "/index.html#/popup"
   },
-  "permissions": [
-    "activeTab",
-    "declarativeContent",
-    "storage",
-    "contextMenus",
-    "webNavigation",
-    "https://aprovadoapp.com/",
-    "https://cors-anywhere.herokuapp.com/"
-  ]
+  "permissions": ["activeTab", "webNavigation", "https://aprovadoapp.com/"]
 }
