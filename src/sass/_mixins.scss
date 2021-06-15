@@ -27,7 +27,6 @@
 
   html,
   body {
-    height: 100%;
     width: 100%;
     font-family: $font-primary;
   }
@@ -44,26 +43,9 @@
   }
 }
 
-@mixin flex-center-important($direction: row) {
-  display: flex !important;
-  flex-direction: $direction !important;
-  justify-content: center !important;
-  align-items: center !important;
-}
-
-@mixin flex-column() {
-  display: flex;
-  flex-direction: column;
-}
-
 @mixin size($width, $height: $width) {
   width: rem($width);
   height: rem($height);
-}
-
-@mixin size-important($width, $height: $width) {
-  width: rem($width) !important;
-  height: rem($height) !important;
 }
 
 @mixin full-size {
