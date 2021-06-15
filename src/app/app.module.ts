@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HotToastModule } from '@ngneat/hot-toast';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PopupComponent } from './components/popup/popup.component';
@@ -24,6 +25,7 @@ import { PopupComponent } from './components/popup/popup.component';
     BrowserAnimationsModule,
     MatFormFieldModule,
     HttpClientModule,
+    HotToastModule.forRoot(),
   ],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],

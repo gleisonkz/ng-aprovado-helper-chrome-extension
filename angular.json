@@ -37,6 +37,11 @@
             }
           },
           "configurations": {
+            "dev": {
+              "customWebpackConfig": {
+                "path": "./custom-webpack-dev.config.ts"
+              }
+            },
             "production": {
               "fileReplacements": [
                 {
@@ -121,5 +126,8 @@
       }
     }
   },
-  "defaultProject": "aprovado-helper-chrome-extension"
+  "defaultProject": "aprovado-helper-chrome-extension",
+  "cli": {
+    "analytics": "83483067-78df-460d-b76f-f3713e9739f9"
+  }
 }
