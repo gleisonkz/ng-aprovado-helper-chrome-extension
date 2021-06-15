@@ -1,11 +1,13 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { HotToastService } from '@ngneat/hot-toast';
 
 interface VideoInfo {
   title: string;
-  durationInSeconds: number;
-  durationText: string;
+  currentDurationInSeconds: number;
+  totalDurationInSeconds: number;
+  totalDurationText: string;
 }
 
 @Component({
@@ -14,35 +16,45 @@ interface VideoInfo {
 })
 export class PopupComponent implements OnInit {
   video: VideoInfo;
+  isLogged = true;
+  // userLogin = {
+  //   Email: '',
+  //   Senha: '',
+  //   ManterConectado: true,
+  // };
   userForm: FormGroup;
   videoForm: FormGroup;
   @ViewChild('$duration') $duration: ElementRef<HTMLSpanElement>;
   @ViewChild('$title') $title: ElementRef<HTMLSpanElement>;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private toast: HotToastService) {}
 
   ngOnInit(): void {
     this.userForm = new FormGroup({
-      email: new FormControl('', [Validators.required]),
-      password: new FormControl('', [Validators.required]),
+      Email: new FormControl('', [Validators.required]),
+      Senha: new FormControl('', [Validators.required]),
+      ManterConectado: new FormControl(true),
     });
 
     this.getVideoDetails();
+    this.checkIfIsLogged();
   }
 
   getVideoDetails(): void {
     chrome.tabs.executeScript(
       {
         code: `(${() => {
-          const $duration = document.querySelector('.ytp-time-duration');
-          const $durationInSeconds = document.querySelector('video');
+          const $textTotalDuration =
+            document.querySelector('.ytp-time-duration');
+          const $video = document.querySelector('video');
           const $title = document.querySelector(
             '.title.style-scope.ytd-video-primary-info-renderer'
           );
 
           const videoInfo = {
-            durationText: $duration?.textContent,
-            durationInSeconds: $durationInSeconds?.currentTime,
+            totalDurationText: $textTotalDuration?.textContent,
+            currentDurationInSeconds: $video?.currentTime,
+            totalDurationInSeconds: $video?.duration,
             title: $title?.textContent,
           };
 
@@ -56,32 +68,12 @@ export class PopupComponent implements OnInit {
   updateVideoInfo(data: any) {
     const dataParsed = data[0] as VideoInfo;
     this.video = dataParsed;
-    const { title, durationText } = dataParsed;
-    this.$duration.nativeElement.innerText = durationText;
+    const { title, totalDurationText } = dataParsed;
+    this.$duration.nativeElement.innerText = totalDurationText;
     this.$title.nativeElement.innerText = title;
   }
 
-  login() {
-    alert('LOGIN');
-  }
-
-  async post() {
-    const userLogin = {
-      Email: 'gleisonsubzerokz@gmail.com',
-      Senha: 'g33888705',
-      ManterConectado: true,
-    };
-    console.log(userLogin);
-
-    const response = await this.http
-      .post(
-        'https://cors-anywhere.herokuapp.com/https://aprovadoapp.com/service/Usuario/Autenticar',
-        userLogin,
-        { observe: 'response' }
-      )
-      .toPromise();
-
-    response.headers.set('Set-Cookie', 'session_token');
+  post() {
     const myData = {
       Id: 0,
       Materia: {
@@ -91,32 +83,61 @@ export class PopupComponent implements OnInit {
       Conteudo: {
         Id: 9178637,
       },
-      DataInicio: '18/09/2020',
-      HoraInicio: '12:13',
+      DataInicio: this.getCurrentDate(),
+      HoraInicio: this.getCurrentTime(),
       Anotacoes: `${this.video.title}`,
-      Duracao: this.video.durationInSeconds,
+      Duracao: this.video.totalDurationInSeconds * 1000,
     };
-    const postResponse = await this.http
+
+    console.log(myData);
+
+    const postResponse = this.http
+      .post('https://aprovadoapp.com/service/Atividade/Novo', myData, {
+        withCredentials: true,
+      })
+      .subscribe(
+        () => this.toast.success('atividade salva'),
+        (error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            this.toast.error('Você não está logado');
+          }
+          this.toast.error(error.message);
+        }
+      );
+  }
+
+  async login() {
+    const response = await this.http
       .post(
-        'https://cors-anywhere.herokuapp.com/https://aprovadoapp.com/service/Usuario/Autenticar',
-        myData,
-        { withCredentials: true }
+        'https://aprovadoapp.com/service/Usuario/Autenticar',
+        this.userForm.value,
+        {
+          observe: 'response',
+        }
       )
       .toPromise();
-    console.log(postResponse);
 
-    // .subscribe((response) => {
-    //   console.log(response);
-    //   console.log(
-    //     'cookie',
-    //     response.headers.set('Set-Cookie', 'session_token')
-    //   );
-    // });
+    response.headers.set('Set-Cookie', 'session_token');
+  }
+
+  getCurrentTime() {
+    return new Date().toString().slice(16, 21);
+  }
+
+  getCurrentDate() {
+    return new Date().toLocaleDateString('pt-br');
   }
 
   extractDuration(duration: string) {
     let totalDuration = duration.split('/')[1].trim();
     totalDuration = totalDuration.match(/\d+:\d+:?\d+/g)![0];
     return totalDuration;
+  }
+
+  checkIfIsLogged() {
+    this.http.get('https://aprovadoapp.com/service/Usuario/Obter').subscribe(
+      () => (this.isLogged = true),
+      () => (this.isLogged = false)
+    );
   }
 }

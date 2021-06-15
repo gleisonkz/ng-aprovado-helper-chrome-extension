@@ -14,14 +14,14 @@
       <span #$title class="value"></span>
     </p>
   </div>
-  <form class="popup__form" [formGroup]="userForm">
+  <form *ngIf="!isLogged" class="popup__form" [formGroup]="userForm">
     <mat-form-field class="popup__field">
       <mat-label>email</mat-label>
       <input
         #input
         matInput
         type="text"
-        formControlName="email"
+        formControlName="Email"
         placeholder="Ex. pat@example.com"
       />
       <button
@@ -41,9 +41,8 @@
       <input
         #input
         matInput
-        type="text"
-        (keyup.enter)="login()"
-        formControlName="password"
+        type="password"
+        formControlName="Senha"
         placeholder="Ex. pat@example.com"
       />
       <button
@@ -60,24 +59,28 @@
     </mat-form-field>
   </form>
 
-  <!-- <button
-    [disabled]="!userForm.valid"
-    mat-raised-button
-    class="popup__button"
-    color="accent"
-    type="button"
-    (click)="login()"
-  >
-    Login
-  </button> -->
+  <div class="buttons-container">
+    <button
+      *ngIf="!isLogged"
+      [disabled]="!userForm.valid"
+      mat-raised-button
+      class="popup__button"
+      color="accent"
+      type="button"
+      (click)="login()"
+    >
+      Login
+    </button>
 
-  <button
-    mat-raised-button
-    class="popup__button"
-    color="accent"
-    type="button"
-    (click)="post()"
-  >
-    Postar
-  </button>
+    <button
+      mat-raised-button
+      class="popup__button"
+      color="accent"
+      type="button"
+      [disabled]="!isLogged"
+      (click)="post()"
+    >
+      Postar
+    </button>
+  </div>
 </div>
