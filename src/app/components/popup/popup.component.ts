@@ -17,11 +17,6 @@ interface VideoInfo {
 export class PopupComponent implements OnInit {
   video: VideoInfo;
   isLogged = true;
-  // userLogin = {
-  //   Email: '',
-  //   Senha: '',
-  //   ManterConectado: true,
-  // };
   userForm: FormGroup;
   videoForm: FormGroup;
   @ViewChild('$duration') $duration: ElementRef<HTMLSpanElement>;
@@ -38,6 +33,31 @@ export class PopupComponent implements OnInit {
 
     this.getVideoDetails();
     this.checkIfIsLogged();
+    chrome.extension.onRequest.addListener((request: any) => {
+      if (request.questions) {
+        this.toast.show('popup opened');
+      }
+    });
+  }
+
+  isEnded() {
+    chrome.runtime.onMessage.addListener(({ videoMessage }) => {
+      if (videoMessage === 'done') {
+        console.log('ACABOU');
+      }
+    });
+  }
+
+  listenVideo() {
+    this.isEnded();
+    chrome.tabs.executeScript({
+      code: `(${() => {
+        const $video = document.querySelector('video');
+        $video?.addEventListener('ended', () => {
+          chrome.runtime.sendMessage({ videoMessage: 'done' });
+        });
+      }})()`,
+    });
   }
 
   getVideoDetails(): void {

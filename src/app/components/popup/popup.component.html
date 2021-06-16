@@ -82,5 +82,16 @@
     >
       Postar
     </button>
+
+    <button
+      mat-raised-button
+      class="popup__button"
+      color="accent"
+      type="button"
+      [disabled]="!isLogged"
+      (click)="listenVideo()"
+    >
+      Monitorar Video
+    </button>
   </div>
 </div>
