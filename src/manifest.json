@@ -13,9 +13,14 @@
   "background": {
     "scripts": ["background.js", "runtime.js"]
   },
-  "page_action": {
+  "browser_action": {
     "default_title": "Aprovado Helper",
     "default_popup": "/index.html#/popup"
   },
-  "permissions": ["activeTab", "webNavigation", "https://aprovadoapp.com/"]
+  "permissions": [
+    "activeTab",
+    "webNavigation",
+    "https://aprovadoapp.com/",
+    "tabs"
+  ]
 }
