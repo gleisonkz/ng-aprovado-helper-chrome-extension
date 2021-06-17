@@ -1,6 +1,13 @@
 chrome.tabs.onSelectionChanged.addListener((tabId) =>
   handleDraggingError(tabId)
 );
+
+chrome.runtime.onMessage.addListener(({ videoMessage }) => {
+  if (videoMessage === 'posted') {
+    alert('VIDEO SALVO COM SUCESSO DONE');
+  }
+});
+
 function handleDraggingError(tabId: number) {
   chrome.tabs.get(tabId, (tab) => {
     if (
@@ -21,8 +28,6 @@ function listenVideoEnded(tab: chrome.tabs.Tab) {
   disablePopUp(tab);
   if (!isInYoutube) return;
   enablePopUp(tab);
-
-  chrome.runtime.sendMessage('get-video');
 }
 
 function enablePopUp(tab: chrome.tabs.Tab) {
