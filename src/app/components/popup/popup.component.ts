@@ -2,13 +2,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { HotToastService } from '@ngneat/hot-toast';
-
-interface VideoInfo {
-  title: string;
-  currentDurationInSeconds: number;
-  totalDurationInSeconds: number;
-  totalDurationText: string;
-}
+import { eListeningType, ListeningType } from 'src/app/models/listening-type';
+import { VideoInfo } from '../../models/video-info';
 
 @Component({
   templateUrl: './popup.component.html',
@@ -18,7 +13,11 @@ export class PopupComponent implements OnInit {
   video: VideoInfo;
   isLogged = true;
   userForm: FormGroup;
-  videoForm: FormGroup;
+  selectedType = new FormControl(9178639);
+  listeningTypes: ListeningType[] = [
+    { key: eListeningType.Passive, value: 'Passive' },
+    { key: eListeningType.Active, value: 'Active' },
+  ];
   @ViewChild('$duration') $duration: ElementRef<HTMLSpanElement>;
   @ViewChild('$title') $title: ElementRef<HTMLSpanElement>;
 
@@ -33,20 +32,9 @@ export class PopupComponent implements OnInit {
 
     this.getVideoDetails();
     this.checkIfIsLogged();
-    chrome.extension.onRequest.addListener((request: any) => {
-      if (request.questions) {
-        this.toast.show('popup opened');
-      }
-    });
   }
 
-  isEnded() {
-    chrome.runtime.onMessage.addListener(({ videoMessage }) => {
-      if (videoMessage === 'done') {
-        console.log('ACABOU');
-      }
-    });
-  }
+  isEnded() {}
 
   listenVideo() {
     this.isEnded();
@@ -54,7 +42,9 @@ export class PopupComponent implements OnInit {
       code: `(${() => {
         const $video = document.querySelector('video');
         $video?.addEventListener('ended', () => {
-          chrome.runtime.sendMessage({ videoMessage: 'done' });
+          chrome.runtime.sendMessage({
+            message: { type: 'done' },
+          });
         });
       }})()`,
     });
@@ -101,7 +91,7 @@ export class PopupComponent implements OnInit {
       },
       Tipo: 'manual',
       Conteudo: {
-        Id: 9178637,
+        Id: this.selectedType.value,
       },
       DataInicio: this.getCurrentDate(),
       HoraInicio: this.getCurrentTime(),
@@ -109,9 +99,7 @@ export class PopupComponent implements OnInit {
       Duracao: this.video.totalDurationInSeconds * 1000,
     };
 
-    console.log(myData);
-
-    const postResponse = this.http
+    this.http
       .post('https://aprovadoapp.com/service/Atividade/Novo', myData, {
         withCredentials: true,
       })

@@ -49,3 +49,7 @@ $accent: map-get($theme, accent);
 .buttons-container {
   margin-top: $global-module-size;
 }
+
+mat-form-field {
+  margin-top: $global-module-size;
+}

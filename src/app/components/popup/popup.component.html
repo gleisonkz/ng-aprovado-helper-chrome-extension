@@ -59,6 +59,15 @@
     </mat-form-field>
   </form>
 
+  <mat-form-field appearance="legacy">
+    <mat-label>Listening Type</mat-label>
+    <mat-select [formControl]="selectedType">
+      <mat-option *ngFor="let type of listeningTypes" [value]="type.key">
+        {{ type.value }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
   <div class="buttons-container">
     <button
       *ngIf="!isLogged"
